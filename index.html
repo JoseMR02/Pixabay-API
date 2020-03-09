@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>repl.it</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+  </head>
+ 
+
+  <body>
+     <h1 class="jumbotron"> Pixabay Image Search </h1>
+  <form class="jumbotron" id="pixabay">
+    Keyword: <input type="text" name="keyword" id="keyword">
+    <span id="keyerror"></span><br><br>
+    Orientation: <select id="orientation" name="orientation">
+      <option value="">Select One</option>
+      <option value="horizontal">Horizontal</option>
+      <option value="vertical">Vertical<option>
+    </select><span id="orierror"></span><br><br>  
+  <input type="submit" value="Search">
+  </form>
+  <span id="image-gallery"></span>
+    <script src="script.js"></script>
+
+    <script>
+      $("#pixabay").on("submit", function(){
+        let valid = true;
+        if($("#keyword").val() == ""){
+          $("#keyerror").html("Enter a keyword.");
+          $("#keyerror").css("color", "red");
+          valid = false;
+        }
+        else{
+          $("#keyerror").html("");
+        }
+        if($("#orientation").val() == ""){
+           $("#orierror").html("Enter an orientation.");
+          $("#orierror").css("color", "red");
+          valid = false;
+        }
+        else{
+          $("#orierror").html("");
+        }
+        if(valid){
+        $.ajax({
+              method: "GET",
+                 url: "https://pixabay.com/api/?key=15533699-9817eb09a5d639bd700812f86&q="+$("#keyword").val()+"&image_type=photo&orientation="+ encodeURIComponent($("#orientation").val().trim()),
+            dataType: "json",
+             success: function(result) {
+               $("#image-gallery").empty();
+               for(let i = 0; i < 4; i++){
+                $("#image-gallery").append('<div class="gallery"> <div class="desc"> Likes: ' + result.hits[i].likes + '</div><img src="'+(result.hits[i].previewURL)+'"/> </div>');
+                  }
+             }
+        });
+        }
+        event.preventDefault();
+      });
+    </script>
+  </body>
+</html>
